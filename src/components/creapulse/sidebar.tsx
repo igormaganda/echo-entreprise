@@ -17,7 +17,7 @@ import {
   LayoutDashboard, Target, TrendingUp, Bot, MessageSquareText, FileOutput,
   BarChart3, Settings, MapPin, Accessibility, LogOut, Menu, ChevronLeft, ChevronRight,
   ClipboardList, FileText, Handshake, FileBarChart,
-  Building2, PenLine, MessageCircle, GraduationCap, Newspaper, Route, Briefcase,
+  Building2, PenLine, MessageCircle, GraduationCap, Newspaper, Route,
   ChevronDown, Users, Trophy, Bell, Sparkles, Calendar,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
