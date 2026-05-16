@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/hooks/use-store'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,9 +24,12 @@ const RegistrationFormTab = dynamic(() => import('./registration-form').then(m =
 const ForumDiscussionsTab = dynamic(() => import('./forum-discussions').then(m => ({ default: () => m.default() })), { ssr: false })
 const MentorDirectoryTab = dynamic(() => import('./mentor-directory').then(m => ({ default: () => m.default() })), { ssr: false })
 const NewsFeedTab = dynamic(() => import('./news-feed').then(m => ({ default: () => m.default() })), { ssr: false })
+const EvenementsTab = dynamic(() => import('@/components/evenements/mes-evenements').then(m => ({ default: () => m.MesEvenements })), { ssr: false })
+const RechercheEmploiTab = dynamic(() => import('@/components/emploi/recherche-emploi').then(m => ({ default: () => m.RechercheEmploi })), { ssr: false })
 const PersonalizedPathTab = dynamic(() => import('./personalized-path').then(m => ({ default: () => m.default() })), { ssr: false })
 const NotificationCenterTab = dynamic(() => import('./notification-center').then(m => ({ default: () => m.default() })), { ssr: false })
 const OutilsBPTab = dynamic(() => import('./bp-outils').then(m => ({ default: () => m.default() })), { ssr: false })
+const ParcoursCreteurTab = dynamic(() => import('./parcours-creteur').then(m => ({ default: () => m.default() })), { ssr: false })
 
 import {
   User,
@@ -1491,56 +1494,265 @@ function TableauDeBordTab() {
   )
 }
 
+// ====================== BILAN COHÉRENCE TAB ======================
+function BilanCoherenceTab() {
+  return (
+    <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
+      <motion.div variants={fadeIn}>
+        <Card className="border-0 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-emerald-500" />
+              <CardTitle className="text-base">Bilan de Cohérence</CardTitle>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">Comparez vos acquis (CV) avec vos aspirations (Radar) pour identifier votre zone de convergence.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-12">
+              <FileSearch className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-sm text-gray-500">Complétez votre CV et le Jeu des Pépites pour générer votre Bilan de Cohérence.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ====================== EXPORT BP TAB ======================
+function ExportBPTab() {
+  return (
+    <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
+      <motion.div variants={fadeIn}>
+        <Card className="border-0 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <FileBarChart className="w-5 h-5 text-violet-500" />
+              <CardTitle className="text-base">Exporter mon Business Plan</CardTitle>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">Générez votre Business Plan complet et votre Pitch Deck.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-12">
+              <FileBarChart className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-sm text-gray-500">Remplissez les sections Stratégie, Marché et Financier pour débloquer l&apos;export.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ====================== RAPPORT DIAGNOSTIC TAB ======================
+function RapportCreascopeTab() {
+  return (
+    <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-6">
+      <motion.div variants={fadeIn}>
+        <Card className="border-0 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-teal-500" />
+              <CardTitle className="text-base">Rapport de Diagnostic Echo Entreprise</CardTitle>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">Votre bilan complet avec la feuille de route à 6 mois.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-12">
+              <Trophy className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-sm text-gray-500">Complétez les 5 étapes du parcours pour générer votre Rapport Echo Entreprise.</p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 // ====================== MAIN USER DASHBOARD ======================
-export default function UserDashboard() {
+// ====================== INSIGHTS IA DÉFILANT ======================
+const INSIGHTS: Record<string, string[]> = {
+  profil: [
+    'Conseil : Complétez votre profil pour accéder aux modules de diagnostic personnalisés.',
+    'Astuce : Un profil complet débloque les recommandations IA contextuelles.',
+    'Votre progression est calculée automatiquement selon les modules complétés.',
+  ],
+  'parcours-creteur': [
+    'Parcours Créateur : Définissez votre vision entrepreneuriale en 3 étapes.',
+    'Identifiez vos atouts et vos zones de développement dès le premier diagnostic.',
+  ],
+  bilan: [
+    'Jeu des Pépites : Glissez les cartes vers la droite pour garder une compétence.',
+    'Le diagramme de Kiviat se met à jour automatiquement après chaque session.',
+    'Astuce : Le Kiviat compare vos soft skills sur 6 dimensions clés.',
+  ],
+  riasec: [
+    'RIASEC : 6 profils pour mieux comprendre votre orientation.',
+    'Sélectionnez vos mots-clés de secteurs pour affiner les recommandations.',
+  ],
+  motivations: [
+    'Vos motivations guideront les suggestions de l\'IA dans tout le parcours.',
+    'Évaluez honnêtement : il n\'y a pas de mauvaise réponse.',
+  ],
+  competences: [
+    'Uploadez votre CV pour lancer une analyse automatique de vos compétences.',
+    'Le Skill Gap identifie les écarts entre vos acquis et les besoins entrepreneurial.',
+    'Conseil : Un CV à jour améliore significativement la précision du diagnostic.',
+  ],
+  juridique: [
+    'Simulatez vos charges pour comparer les régimes juridiques.',
+    'Le simulateur recommande le statut le plus adapté à votre activité.',
+  ],
+  marche: [
+    'L\'étude de marché est essentielle pour valider votre idée de business.',
+    'Identifiez votre client cible et analysez la concurrence.',
+  ],
+  financier: [
+    'Estimez votre CA et vos charges pour obtenir un premier seuil de rentabilité.',
+    'La marge bénéficiaire guide vos décisions de prix.',
+  ],
+  strategie: [
+    'Votre stratégie doit reposer sur une analyse de marché solide.',
+    'Pensez à votre avantage concurrentiel unique.',
+  ],
+  financement: [
+    'Plusieurs aides sont cumulables : n\'hésitez pas à explorer toutes les options.',
+    'Le love money et les prêts d\'honneur sont souvent sous-estimés.',
+  ],
+  'changement-echelle': [
+    'La croissance doit être maîtrisée pour rester viable.',
+    'Anticipez les besoins de recrutement dès le début.',
+  ],
+  annuaire: [
+    'L\'écosystème local regorge de ressources pour les créateurs.',
+    'Les incubateurs offrent souvent un accompagnement gratuit.',
+  ],
+  inscription: [
+    'Inscrivez votre projet pour accéder aux outils de modélisation.',
+    'Un projet bien défini facilite les échanges avec vos conseillers.',
+  ],
+  forum: [
+    'Échangez avec d\'autres créateurs qui partagent vos défis.',
+    'Les retours du forum enrichissent votre vision entrepreneuriale.',
+  ],
+  mentorat: [
+    'Un mentor peut accélérer votre progression de 30% en moyenne.',
+    'N\'hésitez pas à solliciter un accompagnement personnalisé.',
+  ],
+  actualites: [
+    'Restez informé des tendances et opportunités de votre secteur.',
+    'La veille est un atout stratégique pour tout entrepreneur.',
+  ],
+  evenements: [
+    'Participez aux événements France Travail pour développer votre réseau.',
+    'Les forums et ateliers sont des opportunités pour rencontrer des conseillers.',
+    'Rencontrez des organismes de formation et découvrez des métiers en alternance.',
+  ],
+  'recherche-emploi': [
+    'Utilisez les filtres avancés pour cibler les offres correspondant à votre profil.',
+    'Les offres d\'alternance sont idéales pour financer votre création d\'entreprise.',
+    'Conseil : Configurez des alertes emploi pour ne rien manquer des opportunités.',
+    'Développez votre réseau en participant aux événements France Travail.',
+  ],
+  parcours: [
+    'Votre progression est visible dans la feuille de route interactive.',
+    'Chaque étape validée débloque la suivante.',
+  ],
+  'tableau-de-bord': [
+    'Le tableau de bord centralise toutes vos métriques clés.',
+    'Consultez-le régulièrement pour suivre votre progression.',
+  ],
+  outils: [
+    'Les outils BP vous aident à structurer votre Business Plan.',
+    'Le Canvas BMC offre une vue synthétique de votre modèle.',
+  ],
+}
+
+function InsightsBar() {
   const userTab = useAppStore((s) => s.userTab)
-  const setUserTab = useAppStore((s) => s.setUserTab)
+  const [index, setIndex] = useState(0)
+  const messages = INSIGHTS[userTab] || ['Explorez les différents modules pour découvrir vos atouts entrepreneuriaux.']
+
+  useEffect(() => {
+    setIndex(0)
+  }, [userTab])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % messages.length)
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [messages.length])
 
   return (
-    <Tabs value={userTab} onValueChange={(v) => setUserTab(v as typeof userTab)} className="space-y-6">
-      <TabsList className="bg-gray-100 p-1 rounded-xl h-auto flex-wrap gap-1">
-        {[
-          { value: 'profil', icon: User, label: 'Profil' },
-          { value: 'bilan', icon: FileSearch, label: 'Bilan' },
-          { value: 'riasec', icon: Compass, label: 'RIASEC' },
-          { value: 'motivations', icon: Heart, label: 'Motivations' },
-          { value: 'juridique', icon: Scale, label: 'Juridique' },
-          { value: 'competences', icon: Briefcase, label: 'Compétences' },
-          { value: 'marche', icon: ShoppingCart, label: 'Marché' },
-          { value: 'financier', icon: Landmark, label: 'Financier' },
-          { value: 'strategie', icon: Target, label: 'Stratégie' },
-          { value: 'financement', icon: TrendingUp, label: 'Financement' },
-          { value: 'changement-echelle', icon: TrendingUp, label: "Changement d'Échelle" },
-          { value: 'tableau-de-bord', icon: LayoutDashboard, label: 'Roadmap' },
-          { value: 'outils', icon: FileBarChart, label: 'Outils BP' },
-        ].map((tab) => (
-          <TabsTrigger key={tab.value} value={tab.value} className="rounded-lg gap-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm text-xs sm:text-sm px-3 py-2">
-            <tab.icon className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{tab.label}</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
+    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200/60 px-4 py-2.5">
+      <div className="flex items-center gap-2 min-h-[28px]">
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.4 }}
+          className="flex items-center gap-2 flex-1 min-w-0"
+        >
+          <Lightbulb className="w-4 h-4 text-emerald-600 shrink-0" />
+          <p className="text-xs text-emerald-800 truncate">{messages[index]}</p>
+        </motion.div>
+        <div className="flex gap-1 shrink-0">
+          {messages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              className={`w-1.5 h-1.5 rounded-full transition-all ${i === index ? 'bg-emerald-600 scale-125' : 'bg-emerald-300/60 hover:bg-emerald-300'}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
-      <TabsContent value="profil"><ProfilTab /></TabsContent>
-      <TabsContent value="bilan"><BilanTab /></TabsContent>
-      <TabsContent value="riasec"><RiasecTab /></TabsContent>
-      <TabsContent value="motivations"><MotivationsTab /></TabsContent>
-      <TabsContent value="juridique"><JuridiqueTab /></TabsContent>
-      <TabsContent value="competences"><CompetencesTab /></TabsContent>
-      <TabsContent value="marche"><MarcheTab /></TabsContent>
-      <TabsContent value="financier"><FinancierTab /></TabsContent>
-      <TabsContent value="strategie"><StrategyPanel /></TabsContent>
-      <TabsContent value="financement"><FinancingPanel /></TabsContent>
-      <TabsContent value="changement-echelle"><ScaleChangePanel /></TabsContent>
-      <TabsContent value="tableau-de-bord"><TableauDeBordTab /></TabsContent>
-      <TabsContent value="annuaire"><AnnuaireActorsTab /></TabsContent>
-      <TabsContent value="inscription"><RegistrationFormTab /></TabsContent>
-      <TabsContent value="forum"><ForumDiscussionsTab /></TabsContent>
-      <TabsContent value="mentorat"><MentorDirectoryTab /></TabsContent>
-      <TabsContent value="actualites"><NewsFeedTab /></TabsContent>
-      <TabsContent value="parcours"><PersonalizedPathTab /></TabsContent>
-      <TabsContent value="notifications"><NotificationCenterTab /></TabsContent>
-      <TabsContent value="outils"><OutilsBPTab /></TabsContent>
-    </Tabs>
+export default function UserDashboard() {
+  const userTab = useAppStore((s) => s.userTab)
+
+  const renderTab = () => {
+    switch (userTab) {
+      case 'profil': return <ProfilTab />
+      case 'parcours-creteur': return <ParcoursCreteurTab />
+      case 'bilan': return <BilanTab />
+      case 'riasec': return <RiasecTab />
+      case 'motivations': return <MotivationsTab />
+      case 'juridique': return <JuridiqueTab />
+      case 'competences': return <CompetencesTab />
+      case 'marche': return <MarcheTab />
+      case 'financier': return <FinancierTab />
+      case 'strategie': return <StrategyPanel />
+      case 'financement': return <FinancingPanel />
+      case 'changement-echelle': return <ScaleChangePanel />
+      case 'tableau-de-bord': return <TableauDeBordTab />
+      case 'annuaire': return <AnnuaireActorsTab />
+      case 'inscription': return <RegistrationFormTab />
+      case 'forum': return <ForumDiscussionsTab />
+      case 'mentorat': return <MentorDirectoryTab />
+      case 'actualites': return <NewsFeedTab />
+      case 'evenements': return <EvenementsTab />
+      case 'recherche-emploi': return <RechercheEmploiTab />
+      case 'parcours': return <PersonalizedPathTab />
+      case 'notifications': return <NotificationCenterTab />
+      case 'outils': return <OutilsBPTab />
+      case 'bilan-coherence': return <BilanCoherenceTab />
+      case 'export-bp': return <ExportBPTab />
+      case 'rapport-diagnostic': return <RapportCreascopeTab />
+      default: return <ProfilTab />
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* ===== INSIGHTS IA DÉFILANT ===== */}
+      <InsightsBar />
+      {/* ===== CONTENU DU TAB ===== */}
+      {renderTab()}
+    </div>
   )
 }
